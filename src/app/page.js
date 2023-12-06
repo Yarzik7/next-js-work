@@ -1,7 +1,35 @@
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
-  return <h1>Home</h1>;
+const fetchData = async (endpoint = "posts") => {
+  const operationResult = await fetch(
+    `https://jsonplaceholder.typicode.com/${endpoint}`
+  );
+
+  return await operationResult.json();
+};
+
+export default async function Home() {
+  const posts = await fetchData("posts");
+
+  return (
+    <div>
+      <h1>Home</h1>
+      <ul className="posts-list">
+        {posts.map(({ title, body, id }) => (
+          <li key={id} className="posts-list__item">
+            <article className="post">
+              <h2 className="post__title">{title}</h2>
+              <p className="post__text">{body}</p>
+              <Link href={`/post/${id}`} className="post__link">
+                Details
+              </Link>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 // export default function Home() {
